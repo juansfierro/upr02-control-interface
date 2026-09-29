@@ -1,5 +1,5 @@
-# husky-controller-application
-A PyQt6 application used to remotely control the UPR02 Clearpath A200 Husky over Wi-Fi.
+# UPR02 A200-Husky Control Interface
+A PyQt6 application for teleoperation of the UPR02 Clearpath A200 Husky.
 
 ## Setup
 - Install dependencies on Secondary Computer:
