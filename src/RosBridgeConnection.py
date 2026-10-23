@@ -20,6 +20,7 @@ class RosBridgeConnection(QObject):
     battery_received = pyqtSignal(dict)
 
     NAMESPACE = '/a200_0867'
+    RPI_NAMESPACE = '/rpi_5'
     CMD_VEL_RATE_HZ = 10
     IS_AWAKE_RATE_HZ = 5
 
@@ -27,6 +28,7 @@ class RosBridgeConnection(QObject):
         super().__init__()
         self.client: roslibpy.Ros | None = None
         self.cmd_vel_topic: roslibpy.Topic | None = None
+        self.gpio_pin_out_topic: roslibpy.Topic | None = None
         self.is_awake_topic: roslibpy.Topic | None = None
         self.odom_topic: roslibpy.Topic | None = None
         self.battery_topic: roslibpy.Topic | None = None
@@ -86,6 +88,10 @@ class RosBridgeConnection(QObject):
             self.cmd_vel_topic.unadvertise()
             self.cmd_vel_topic = None
 
+        if self.gpio_pin_out_topic is not None:
+            self.gpio_pin_out_topic.unadvertise()
+            self.gpio_pin_out_topic = None
+
         if self.odom_topic is not None:
             self.odom_topic.unsubscribe()
             self.odom_topic = None
@@ -118,6 +124,12 @@ class RosBridgeConnection(QObject):
             "geometry_msgs/msg/TwistStamped"
         )
         self.cmd_vel_topic.advertise()
+
+        self.gpio_pin_out_topic = roslibpy.Topic(
+            self.client, f"{self.RPI_NAMESPACE}/gpio_pin_out",
+            "std_msgs/msg/Bool"
+        )
+        self.gpio_pin_out_topic.advertise()
 
         self.odom_topic = roslibpy.Topic(
             self.client, f"{self.NAMESPACE}/platform/odom/filtered",
@@ -187,6 +199,15 @@ class RosBridgeConnection(QObject):
             },
         })
         self.cmd_vel_topic.publish(msg)
+
+    @pyqtSlot(bool)
+    def publish_gpio(self, enabled: bool):
+        if not self._is_connected or self.gpio_pin_out_topic is None:
+            return
+
+        self.gpio_pin_out_topic.publish(roslibpy.Message({
+            "data": enabled
+        }))
 
     def _publish_heartbeat(self):
         if not self._is_connected or self.is_awake_topic is None:

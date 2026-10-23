@@ -15,6 +15,7 @@ from PyQt6.QtWidgets import (
 from RosBridgeConnection import RosBridgeConnection
 from widgets.ConnectionWidget import ConnectionWidget
 from widgets.TeleopWidget import TeleopWidget
+from widgets.GPIOTeleopWidget import GPIOTeleopWidget
 from widgets.TelemetryWidget import TelemetryWidget
 from widgets.VideoStreamWidget import VideoStreamWidget
 
@@ -34,6 +35,8 @@ class MainWindow(QMainWindow):
         self.connection_widget.setMaximumWidth(420)
         self.teleop_widget = TeleopWidget()
         self.teleop_widget.setMaximumWidth(420)
+        self.gpio_teleop_widget = GPIOTeleopWidget()
+        self.gpio_teleop_widget.setMaximumWidth(420)
         self.telemetry_widget = TelemetryWidget()
         self.telemetry_widget.setMaximumWidth(420)
         self.video_stream_widget = VideoStreamWidget(port=5000)
@@ -43,6 +46,7 @@ class MainWindow(QMainWindow):
 
         layout.addWidget(self.connection_widget)
         layout.addWidget(self.teleop_widget)
+        layout.addWidget(self.gpio_teleop_widget)
         layout.addWidget(self.telemetry_widget)
 
         mlayout.addLayout(layout)
@@ -73,6 +77,7 @@ class MainWindow(QMainWindow):
         self.ros.battery_received.connect(self.telemetry_widget.update_battery)
 
         self.teleop_widget.velocity_command.connect(self.ros.publish_velocity)
+        self.gpio_teleop_widget.gpio_command.connect(self.ros.publish_gpio)
 
     @pyqtSlot()
     def _on_ros_connected(self):
