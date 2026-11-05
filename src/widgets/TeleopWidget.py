@@ -218,11 +218,11 @@ class TeleopWidget(QGroupBox):
             btn.setEnabled(enabled)
         self.enabled = enabled
 
-    def keyPressEvent(self, event: QKeyEvent):
-        if event.isAutoRepeat():
+    def keyPressEvent(self, a0: QKeyEvent | None) -> None:
+        if a0.isAutoRepeat():
             return
 
-        key = event.key()
+        key = a0.key()
         if self.enabled:
             if key == Qt.Key.Key_Up:
                 self.btn_forward.setDown(True)
@@ -255,15 +255,15 @@ class TeleopWidget(QGroupBox):
                     self.angular_speed_spin.value() - self.STEP_INTERVAL_ANGULAR_VELOCITY
                 )
             else:
-                super().keyPressEvent(event)
+                super().keyPressEvent(a0)
         else:
-            super().keyPressEvent(event)
+            super().keyPressEvent(a0)
 
-    def keyReleaseEvent(self, event: QKeyEvent):
-        if event.isAutoRepeat():
+    def keyReleaseEvent(self, a0: QKeyEvent | None) -> None:
+        if a0.isAutoRepeat():
             return
 
-        key = event.key()
+        key = a0.key()
         if self.enabled:
             if key == Qt.Key.Key_Up:
                 self.btn_forward.setDown(False)
@@ -280,9 +280,9 @@ class TeleopWidget(QGroupBox):
             elif key == Qt.Key.Key_Space:
                 self.btn_stop.setDown(False)
             else:
-                super().keyReleaseEvent(event)
+                super().keyReleaseEvent(a0)
         else:
-            super().keyReleaseEvent(event)
+            super().keyReleaseEvent(a0)
 
     def _set_linear_step(self, value):
         self.STEP_INTERVAL_LINEAR_VELOCITY = value

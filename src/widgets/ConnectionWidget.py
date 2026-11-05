@@ -25,6 +25,7 @@ class ConnectionWidget(QGroupBox):
 
         self.host_input = QLineEdit(None)
         self.host_input.setPlaceholderText("IP Address")
+        self.host_input.setText("192.168.0.102")
 
         self.port_input = QLineEdit("9090")
         self.port_input.setFixedWidth(60)

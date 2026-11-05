@@ -23,7 +23,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Husky A200 Controller")
-        self.setMinimumSize(420, 540)
+        self.setMinimumSize(1100, 1000)
 
         self.ros = RosBridgeConnection()
 
@@ -61,6 +61,7 @@ class MainWindow(QMainWindow):
         # Teleop controls are disabled on start.
         # Enable on succesful connection to rosbridge server.
         self.teleop_widget.set_enabled_controls(False)
+        self.gpio_teleop_widget.set_enabled_controls(False)
         self.video_stream_widget.start()
 
         self._wire_signals()
@@ -86,6 +87,7 @@ class MainWindow(QMainWindow):
         """
         self.connection_widget.set_connected_state(True)
         self.teleop_widget.set_enabled_controls(True)
+        self.gpio_teleop_widget.set_enabled_controls(True)
         self.status_bar.showMessage("Connected to RosBridge")
 
     @pyqtSlot()
@@ -95,6 +97,7 @@ class MainWindow(QMainWindow):
         """
         self.connection_widget.set_connected_state(False)
         self.teleop_widget.set_enabled_controls(False)
+        self.gpio_teleop_widget.set_enabled_controls(False)
         self.status_bar.showMessage("Disconnected")
 
     @pyqtSlot(str)
